@@ -80,14 +80,19 @@ a:hover{color:var(--text)}
 .tabs a:hover{background:var(--bg-panel);color:var(--text)}
 .tabs a[aria-current="page"]{border-color:var(--accent-text);color:var(--accent-text)}
 
-#theme{
+#theme,#wakelock{
   width:44px;height:44px;flex:0 0 auto;display:grid;place-items:center;
   background:none;cursor:pointer;border:1px solid var(--line);
   border-radius:var(--radius-pill);color:var(--wood);
   transition:border-color .15s,color .15s;
 }
-#theme:hover{border-color:var(--accent-text);color:var(--accent-text)}
-#theme svg{width:22px;height:22px}
+#theme:hover,#wakelock:hover{border-color:var(--accent-text);color:var(--accent-text)}
+#theme svg,#wakelock svg{width:22px;height:22px}
+
+/* Skärmlåset är en av/på-knapp, så påslaget läge bär accenten. */
+#wakelock[aria-pressed="true"]{border-color:var(--accent-text);color:var(--accent-text)}
+/* display:grid ovan slår annars ut hidden, som vi använder utan stöd i webbläsaren. */
+#wakelock[hidden]{display:none}
 
 /* På smal skärm får flikarna en egen rad under namnet. */
 @media (max-width:640px){

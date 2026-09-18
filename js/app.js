@@ -8,6 +8,7 @@
    Vy-modulen och dess markup laddas först när rutten besöks. */
 
 import { initTheme } from './theme.js';
+import { initWakeLock } from './wakelock.js';
 
 const ROUTES = {
   '/': {
@@ -90,6 +91,7 @@ function onRouteChange(){
 }
 
 initTheme(document.getElementById('theme'));
+initWakeLock(document.getElementById('wakelock'));
 
 document.querySelector('.skip').addEventListener('click', ev => {
   ev.preventDefault();                       // hoppa utan att röra rutten
