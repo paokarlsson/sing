@@ -1,0 +1,61 @@
+/* Grundstommen: färgtokens, typografi, topplist och sidlayout.
+   Delas av alla vyer i appen. */
+
+:root{
+  --night:#0E1426; --glass:#24304F; --candle:#E9B15C; --vine:#4F8E92;
+  --parchment:#EFE8D8; --dim:#808CAE; --danger:#D2717F;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  --measure:720px;
+}
+:root[data-theme="light"]{
+  --night:#EDE9DC; --glass:#CFC7B0; --candle:#A9701F; --vine:#3A6E73;
+  --parchment:#1A2138; --dim:#6C7188; --danger:#A83248;
+}
+:root[data-route="/mic-till-midi"]{ --measure:900px }
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--night);color:var(--parchment);font-family:var(--sans);
+     -webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
+
+.shell{max-width:var(--measure);margin:0 auto;padding:0 16px}
+
+/* ---------- hoppa till innehåll ---------- */
+.skip{position:absolute;left:-9999px;top:0;z-index:10;background:var(--night);
+      color:var(--candle);border:1px solid var(--candle);padding:10px 14px;font-size:12px}
+.skip:focus{left:8px;top:8px}
+
+/* ---------- topplist ---------- */
+.topbar{border-bottom:1px solid var(--glass)}
+.topbar .shell{display:flex;align-items:center;gap:8px;min-height:56px;padding-top:9px;padding-bottom:9px}
+.brand{font-family:var(--serif);font-size:19px;letter-spacing:.01em;text-decoration:none;
+       color:var(--parchment);flex:0 0 auto;margin-right:6px}
+.brand:hover{color:var(--candle)}
+.tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
+        color:var(--dim);white-space:nowrap;padding:8px 10px;border:1px solid transparent;
+        border-radius:2px;transition:color .15s,border-color .15s}
+.tabs a:hover{color:var(--candle)}
+.tabs a[aria-current="page"]{color:var(--candle);border-color:var(--glass)}
+
+#theme{width:38px;height:38px;border-radius:2px;flex:0 0 auto;background:none;cursor:pointer;
+       border:1px solid var(--glass);color:var(--candle);font-size:15px;line-height:1;
+       transition:border-color .15s}
+#theme:hover{border-color:var(--candle)}
+#theme:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+
+/* ---------- vy-container ---------- */
+#view{flex:1 0 auto;padding-top:20px;padding-bottom:48px}
+#view[data-state="loading"]{min-height:50vh}
+.loading,.viewerror{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
+                    padding:40px 0}
+.viewerror{color:var(--danger);text-transform:none;letter-spacing:.04em;font-size:13px}
+
+.sitefoot{border-top:1px solid var(--glass);margin-top:auto}
+.sitefoot .shell{padding-top:16px;padding-bottom:28px;font-size:11px;letter-spacing:.06em;
+                 color:var(--dim)}
+
+:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
