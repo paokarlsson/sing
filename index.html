@@ -1,118 +1,38 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html lang="sv" data-route="/">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sjunga</title>
-<style>
-  :root{
-    --night:#0E1426; --glass:#24304F; --candle:#E9B15C; --vine:#4F8E92;
-    --parchment:#EFE8D8; --dim:#808CAE;
-    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
-    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  }
-  :root[data-theme="light"]{
-    --night:#EDE9DC; --glass:#CFC7B0; --candle:#A9701F; --vine:#3A6E73;
-    --parchment:#1A2138; --dim:#6C7188;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--night);color:var(--parchment);font-family:var(--sans);
-       -webkit-font-smoothing:antialiased}
-  .wrap{max-width:720px;margin:0 auto;padding:18px 16px 48px}
-
-  .head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
-        margin-bottom:34px}
-  .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-           margin:0 0 10px}
-  h1{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.05;margin:0}
-  .lede{font-size:13px;line-height:1.55;color:var(--dim);margin:10px 0 0;max-width:46ch}
-
-  #theme{width:38px;height:38px;border-radius:2px;flex:none;background:none;cursor:pointer;
-         border:1px solid var(--glass);color:var(--candle);font-size:15px;line-height:1;
-         transition:border-color .15s}
-  #theme:hover{border-color:var(--candle)}
-  #theme:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
-
-  .cards{display:grid;gap:14px}
-  @media (min-width:620px){ .cards{grid-template-columns:1fr 1fr} }
-
-  .card{display:flex;flex-direction:column;text-decoration:none;color:inherit;
-        border:1px solid var(--glass);border-radius:3px;padding:22px 20px 20px;
-        background:linear-gradient(180deg,#0B1020 0%,#182142 100%);
-        transition:border-color .15s,transform .15s}
-  :root[data-theme="light"] .card{background:linear-gradient(180deg,#FCFAF2 0%,#E4DECB 100%)}
-  .card:hover{border-color:var(--candle);transform:translateY(-2px)}
-  .card:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
-
-  .glyph{font-size:26px;line-height:1;margin-bottom:16px}
-  .card h2{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.15;margin:0}
-  .kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--vine);
-          margin:0 0 8px}
-  .card p{font-size:13px;line-height:1.6;color:var(--dim);margin:12px 0 0}
-  .go{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--candle);
-      margin-top:18px}
-  .go::after{content:" →"}
-
-  footer{margin-top:34px;font-size:11px;letter-spacing:.06em;color:var(--dim)}
-</style>
+<meta name="description" content="Två verktyg för rösten: psalmspelaren och mic till MIDI.">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/home.css">
+<link rel="stylesheet" href="css/psalmspelaren.css">
+<link rel="stylesheet" href="css/mic-till-midi.css">
 </head>
 <body>
-<div class="wrap">
 
-  <div class="head">
-    <div>
-      <p class="eyebrow">Två verktyg för rösten</p>
-      <h1>Sjunga</h1>
-      <p class="lede">Välj mellan att sjunga med psalmboken eller att göra din
-        egen sång till noter.</p>
-    </div>
-    <button id="theme" aria-label="Växla mellan mörkt och ljust tema">☾</button>
+<a class="skip" href="#view">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="shell">
+    <a class="brand" href="#/">Sjunga</a>
+    <nav class="tabs" id="tabs" aria-label="Verktyg">
+      <a href="#/psalmspelaren">Psalmspelaren</a>
+      <a href="#/mic-till-midi">Mic → MIDI</a>
+    </nav>
+    <button id="theme" aria-label="Växla mellan mörkt och ljust tema" aria-pressed="false">☾</button>
   </div>
+</header>
 
-  <div class="cards">
+<main id="view" class="shell" data-state="loading">
+  <p class="loading">Laddar…</p>
+</main>
 
-    <a class="card" href="psalmspelaren.html">
-      <div class="glyph">🕯</div>
-      <p class="kicker">Den svenska psalmboken</p>
-      <h2>Psalmspelaren</h2>
-      <p>Välj en psalm, följ texten och låt melodin spelas upp. Fria melodier
-        ur psalmboken, med transponering och tempo efter din röst.</p>
-      <div class="go">Öppna</div>
-    </a>
+<footer class="sitefoot">
+  <div class="shell">Fungerar bäst i Chrome eller Safari. Mikrofon och MIDI kräver https.</div>
+</footer>
 
-    <a class="card" href="mic-till-midi.html">
-      <div class="glyph">🎙</div>
-      <p class="kicker">Metronom · mikrofon · MIDI</p>
-      <h2>Mic → MIDI</h2>
-      <p>Sätt tempo, sjung mot klicket, och appen kvantiserar tonhöjden du
-        sjunger till noter du kan spara som MIDI-fil.</p>
-      <div class="go">Öppna</div>
-    </a>
-
-  </div>
-
-  <footer>Fungerar bäst i Chrome eller Safari. Mic → MIDI behöver tillgång till mikrofonen.</footer>
-
-</div>
-
-<script>
-(function(){
-  var root = document.documentElement, btn = document.getElementById('theme');
-  var KEY = 'sing-theme';
-  function apply(t){
-    if(t === 'light'){ root.setAttribute('data-theme','light'); btn.textContent = '☀'; }
-    else { root.removeAttribute('data-theme'); btn.textContent = '☾'; }
-  }
-  var saved = null;
-  try { saved = localStorage.getItem(KEY); } catch(e){}
-  apply(saved || (window.matchMedia &&
-        window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
-  btn.addEventListener('click', function(){
-    var next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    apply(next);
-    try { localStorage.setItem(KEY, next); } catch(e){}
-  });
-})();
-</script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

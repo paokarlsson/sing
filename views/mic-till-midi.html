@@ -1,0 +1,59 @@
+<div class="mic">
+  <p class="eyebrow">Metronom · mikrofon · MIDI</p>
+  <h1>Mic → MIDI</h1>
+  <p class="sub">Sätt tempo, sjung mot klicket, och appen kvantiserar tonhöjden du sjunger till
+     noter på taktnätet. Exportera resultatet som en riktig .mid-fil.</p>
+
+  <div class="panel warn" id="warnBanner" hidden>
+    <strong>Mikrofonen kan inte starta i den här vyn.</strong>
+    <p id="warnText"></p>
+  </div>
+
+  <div class="panel">
+    <div class="controls">
+      <div class="field">
+        <label for="bpm">Tempo</label>
+        <div class="row"><input type="range" id="bpm" min="40" max="200" value="90">
+          <span class="num" id="bpmNum">90</span></div>
+      </div>
+      <div class="field">
+        <label for="tsig">Taktart</label>
+        <select id="tsig">
+          <option value="2">2/4</option><option value="3">3/4</option>
+          <option value="4" selected>4/4</option><option value="6">6/8 (räknas 6)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="subdiv">Kvantisering</label>
+        <select id="subdiv">
+          <option value="1">Fjärdedelar</option>
+          <option value="2" selected>Åttondelar</option>
+          <option value="4">Sextondelar</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="transport">
+      <button id="mic" aria-pressed="false">Mikrofon av</button>
+      <button id="rec" disabled>Spela in</button>
+      <button id="stop" disabled>Stoppa</button>
+      <button id="play" disabled>Spela upp</button>
+      <button id="undo" disabled>Ångra ton</button>
+      <button id="clear" disabled>Rensa</button>
+      <button id="exportBtn" disabled>Exportera MIDI</button>
+    </div>
+    <p class="status" id="statusText"></p>
+
+    <div class="readout">
+      <div><span class="k">Tonhöjd</span><span class="v" id="pitchNote">–</span></div>
+      <div><span class="k">Frekvens</span><span class="v" id="pitchHz">–</span></div>
+      <div><span class="k">Takt · slag</span><span class="v" id="beatPos">–</span></div>
+      <div><span class="k">Toner</span><span class="v" id="noteCount">0</span></div>
+    </div>
+  </div>
+
+  <div class="stage"><canvas id="c"></canvas></div>
+
+  <div class="listhead"><h2>Inspelade toner</h2></div>
+  <div class="notelist" id="notelist"><div class="empty">Inga toner ännu. Spela in för att börja.</div></div>
+</div>

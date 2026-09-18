@@ -1,0 +1,91 @@
+/* Mic → MIDI: metronom, inspelning och notlista. Allt scopat till .mic. */
+
+.mic{
+  --m-panel:#1a1f28; --m-panel2:#20262f; --m-line:#2b3140;
+  --m-text:#eeeae0; --m-dim:#828a9c; --m-dim2:#5b6172;
+  --m-accent:#e8a33d; --m-accent-dim:#8a662a;
+  --m-pitch:#49cfc0; --m-danger:#e2637a; --m-danger-dim:#7a3644;
+  --m-warn-bg:#241417;
+  --m-stage:linear-gradient(180deg,#0e1117 0%,#171c25 100%);
+  color:var(--m-text);
+}
+:root[data-theme="light"] .mic{
+  --m-panel:#F6F2E6; --m-panel2:#EDE7D6; --m-line:#CFC7B0;
+  --m-text:#1A2138; --m-dim:#6C7188; --m-dim2:#8A8FA0;
+  --m-accent:#A9701F; --m-accent-dim:#C9A05A;
+  --m-pitch:#2E8C84; --m-danger:#B03A54; --m-danger-dim:#D79AA8;
+  --m-warn-bg:#F6E3E6;
+  --m-stage:linear-gradient(180deg,#FCFAF2 0%,#E4DECB 100%);
+}
+
+.mic .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+              color:var(--m-dim);margin:0 0 6px}
+.mic h1{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:-.01em;margin:0 0 4px}
+.mic .sub{font-size:13px;color:var(--m-dim);margin:0 0 22px;max-width:56ch;line-height:1.5}
+
+.mic .panel{background:var(--m-panel);border:1px solid var(--m-line);border-radius:4px;padding:16px}
+.mic .panel + .panel{margin-top:14px}
+.mic .panel.warn{border-color:var(--m-danger-dim);background:var(--m-warn-bg)}
+.mic .panel.warn strong{color:var(--m-danger);font-size:13px}
+.mic .panel.warn p{margin:6px 0 0;font-size:12.5px;color:var(--m-text);line-height:1.5}
+
+.mic .controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px 18px}
+.mic .field label{display:block;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;
+                  text-transform:uppercase;color:var(--m-dim);margin-bottom:7px}
+.mic .field .row{display:flex;align-items:center;gap:8px}
+.mic input[type=range]{width:100%;-webkit-appearance:none;background:none;height:20px}
+.mic input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--m-line)}
+.mic input[type=range]::-moz-range-track{height:2px;background:var(--m-line)}
+.mic input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
+      border-radius:50%;background:var(--m-accent);margin-top:-5px}
+.mic input[type=range]::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;
+      background:var(--m-accent)}
+.mic .num{font-family:var(--mono);font-size:18px;color:var(--m-text);min-width:46px;text-align:right;
+          font-variant-numeric:tabular-nums}
+.mic select{font-family:var(--sans);font-size:13px;background:var(--m-panel2);color:var(--m-text);
+            border:1px solid var(--m-line);border-radius:3px;padding:8px 9px;width:100%;cursor:pointer}
+
+.mic .transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.mic button{font-family:var(--sans);font-size:12.5px;letter-spacing:.02em;cursor:pointer;
+            background:var(--m-panel2);color:var(--m-text);border:1px solid var(--m-line);
+            border-radius:3px;padding:10px 15px;
+            transition:border-color .15s,color .15s,background .15s}
+.mic button:hover:not(:disabled){border-color:var(--m-dim)}
+.mic button:disabled{opacity:.35;cursor:default}
+.mic button:focus-visible{outline:2px solid var(--m-accent);outline-offset:2px}
+.mic #mic.on{border-color:var(--m-pitch);color:var(--m-pitch)}
+.mic #rec{border-color:var(--m-danger-dim);color:var(--m-danger)}
+.mic #rec.active{background:var(--m-danger);border-color:var(--m-danger);color:#1a0d10}
+.mic #stop{border-color:var(--m-line)}
+.mic #exportBtn{border-color:var(--m-accent-dim);color:var(--m-accent);margin-left:auto}
+.mic #exportBtn:hover:not(:disabled){border-color:var(--m-accent)}
+.mic .status{font-family:var(--mono);font-size:11.5px;color:var(--m-dim);margin-top:10px}
+.mic .status.err{color:var(--m-danger)}
+.mic .panel.warn code{font-family:var(--mono);background:rgba(0,0,0,.25);padding:1px 5px;
+                      border-radius:2px}
+
+.mic .readout{display:flex;gap:26px;align-items:baseline;margin-top:14px;padding-top:14px;
+              border-top:1px solid var(--m-line);font-family:var(--mono);flex-wrap:wrap}
+.mic .readout .k{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--m-dim);
+                 display:block;margin-bottom:4px}
+.mic .readout .v{font-size:19px;color:var(--m-text)}
+.mic .readout .v.pitch-on{color:var(--m-pitch)}
+
+.mic .stage{position:relative;margin-top:14px;border:1px solid var(--m-line);border-radius:4px;
+            overflow:hidden;background:var(--m-stage)}
+.mic canvas{display:block;width:100%;height:280px}
+
+.mic .listhead{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+.mic .listhead h2{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+                  color:var(--m-dim);font-weight:500;margin:0}
+.mic .notelist{margin-top:8px;max-height:220px;overflow-y:auto;border:1px solid var(--m-line);
+               border-radius:4px}
+.mic .noterow{display:flex;align-items:center;gap:10px;padding:7px 12px;font-family:var(--mono);
+              font-size:12px;border-bottom:1px solid var(--m-line)}
+.mic .noterow:last-child{border-bottom:none}
+.mic .noterow .nm{color:var(--m-pitch);min-width:34px}
+.mic .noterow .beats{color:var(--m-dim);flex:1}
+.mic .noterow .del{background:none;border:none;color:var(--m-dim2);font-size:14px;padding:2px 6px;
+                   cursor:pointer}
+.mic .noterow .del:hover{color:var(--m-danger)}
+.mic .empty{padding:18px;color:var(--m-dim2);font-size:12.5px;text-align:center}
