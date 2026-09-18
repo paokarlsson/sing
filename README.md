@@ -23,6 +23,7 @@ css/mic-till-midi.css   mic → midi (scopad till .mic)
 views/*.html            markup för respektive vy
 js/app.js               hash-router och vylivscykel
 js/theme.js             mörkt/ljust tema + palette() som läser färgtokens
+js/wakelock.js          knappen som håller skärmen tänd
 js/lib/pitch.js         YIN-tonhöjdsdetektering
 js/lib/notes.js         notnamn, vita tangenter, rundade rektanglar
 js/lib/midi-read.js     läsa .mid/.kar → psalmobjekt
@@ -35,6 +36,14 @@ js/data/samples.js      orgelsamplingar (laddas först när ljudet startar)
 Rutter: `#/` (start), `#/psalmspelaren`, `#/mic-till-midi`. De gamla
 adresserna `psalmspelaren.html` och `mic-till-midi.html` pekar vidare till
 motsvarande vy.
+
+Topplisten har två knappar vid sidan av flikarna: temaknappen och en som
+håller skärmen tänd. Den senare tar ett skärmlås (Screen Wake Lock) så att
+skärmen inte slocknar mitt i en psalm, minns valet i `localStorage` och tar
+låset på nytt när fliken syns igen — webbläsaren släpper det så fort man byter
+flik. Nekas låset, vilket händer när valet återtas vid sidladdning utan en
+klickning bakom sig, behålls valet och nästa klick får försöka igen. Saknar
+webbläsaren stödet visas knappen inte alls.
 
 Varje vymodul exporterar `mount(root)` och får returnera en städfunktion.
 Routern anropar den innan nästa vy monteras, så rAF-loopar, timers,
