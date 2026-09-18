@@ -23,7 +23,7 @@
   </div>
 
   <div class="transport">
-    <button id="play" aria-label="Spela">▶</button>
+    <button id="play" aria-label="Spela"></button>
     <div class="bar"><input type="range" id="seek" min="0" max="1000" value="0" aria-label="Position i psalmen"></div>
     <div class="clock"><span id="now">0:00</span> / <span id="tot">0:00</span></div>
   </div>
@@ -31,7 +31,7 @@
   <div class="controls">
     <div class="row">
       <span>Tonart</span>
-      <button id="down" aria-label="Sänk en halvton">−</button>
+      <button id="down" aria-label="Sänk en halvton">–</button>
       <div id="keyname"></div>
       <button id="up" aria-label="Höj en halvton">+</button>
     </div>
@@ -50,10 +50,10 @@
   </div>
 
   <div class="legend">
-    <div><i style="background:#E9B15C"></i>Melodi</div>
-    <div><i style="background:#4F8E92"></i>Alt, tenor, bas</div>
-    <div><i style="background:#E38FA8"></i>Din röst</div>
-    <div><i style="background:#8F86D8"></i>Ditt spel</div>
+    <div><i style="background:var(--roll-melody)"></i>Melodi</div>
+    <div><i style="background:var(--roll-harmony)"></i>Alt, tenor, bas</div>
+    <div><i style="background:var(--roll-voice)"></i>Din röst</div>
+    <div><i style="background:var(--roll-midi)"></i>Ditt spel</div>
   </div>
 
   <div class="verses" id="verses"></div>

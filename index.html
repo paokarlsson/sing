@@ -5,6 +5,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sjunga</title>
 <meta name="description" content="Två verktyg för rösten: psalmspelaren och mic till MIDI.">
+<meta name="theme-color" content="#F4EDE1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1C1611" media="(prefers-color-scheme: dark)">
+
+<script>
+/* Sätter temat innan sidan målas så att den inte blinkar.
+   js/theme.js äger valet i övrigt och använder samma nyckel. */
+(function(){
+  var saved = null;
+  try { saved = localStorage.getItem('sing-theme'); } catch (e) {}
+  var light = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  document.documentElement.setAttribute('data-theme', saved || (light ? 'light' : 'dark'));
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap">
+
+<link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/home.css">
 <link rel="stylesheet" href="css/psalmspelaren.css">
@@ -21,7 +40,7 @@
       <a href="#/psalmspelaren">Psalmspelaren</a>
       <a href="#/mic-till-midi">Mic → MIDI</a>
     </nav>
-    <button id="theme" aria-label="Växla mellan mörkt och ljust tema" aria-pressed="false">☾</button>
+    <button id="theme" aria-label="Växla mellan mörkt och ljust tema" aria-pressed="false"></button>
   </div>
 </header>
 

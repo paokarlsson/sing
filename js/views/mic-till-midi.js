@@ -5,26 +5,24 @@
 import { createPitchDetector, BUF_SIZE } from '../lib/pitch.js';
 import { WHITE, noteName, roundRect } from '../lib/notes.js';
 import { buildMIDI, downloadMIDI } from '../lib/midi-write.js';
-import { onThemeChange } from '../theme.js';
+import { onThemeChange, palette } from '../theme.js';
 
 const LOOKAHEAD = 25, SCHEDULE_AHEAD = 0.12;
 const SILENCE_GAP = 0.16, MIN_NOTE_SEC = 0.09, SMOOTH_N = 4;
 const PPB = 64;                       // pixlar per slag
 const PLAYHEAD_X_FRAC = 0.72;
 const GUTTER = 34;
-const MONO = '10px ui-monospace,Menlo,Consolas,monospace';
+const LABEL_FONT = '500 11px Jost,system-ui,sans-serif';
 
-const PAL = {
-  dark: { rowWhite:'rgba(255,255,255,0.02)', rowBlack:'rgba(0,0,0,0.16)',
-          cLine:'rgba(255,255,255,0.06)', label:'#5b6172',
-          barLine:'rgba(255,255,255,0.14)', beatLine:'rgba(255,255,255,0.05)',
-          note:'rgba(232,163,61,0.85)', noteOpen:'rgba(232,163,61,0.35)', noteText:'#1a1206',
-          trace:'#49cfc0', playhead:'rgba(255,255,255,0.25)', playheadRec:'#e2637a' },
-  light:{ rowWhite:'rgba(255,255,255,0.45)', rowBlack:'rgba(0,0,0,0.07)',
-          cLine:'rgba(0,0,0,0.10)', label:'#8A8FA0',
-          barLine:'rgba(0,0,0,0.18)', beatLine:'rgba(0,0,0,0.07)',
-          note:'rgba(169,112,31,0.85)', noteOpen:'rgba(169,112,31,0.30)', noteText:'#FDF7EA',
-          trace:'#2E8C84', playhead:'rgba(0,0,0,0.28)', playheadRec:'#B03A54' },
+/* Taktnätets färger bor i css/tokens.css och byter värde med temat.
+   Här står bara vilket token som hör till vilken roll. */
+const GRID = {
+  rowWhite:   '--grid-row',        rowBlack:  '--grid-row-black',
+  cLine:      '--grid-octave',     label:     '--grid-label',
+  barLine:    '--grid-bar',        beatLine:  '--grid-beat',
+  note:       '--grid-note',       noteOpen:  '--grid-note-open',
+  noteText:   '--grid-note-text',  trace:     '--grid-trace',
+  playhead:   '--grid-playhead',   playheadRec:'--grid-playhead-rec',
 };
 
 const detectPitch = createPitchDetector({ threshold: 0.15, rmsGate: 0.01, minHz: 70, maxHz: 1100 });
@@ -324,8 +322,8 @@ export function mount(root){
   const cv = $('#c'), ctx = cv.getContext('2d');
   let W = 0, H = 0, DPR = 1, lastBeatShown = 0, rafId = 0;
 
-  let P = PAL.dark;
-  const offTheme = onThemeChange(name => { P = PAL[name] || PAL.dark; });
+  let P = palette(GRID);
+  const offTheme = onThemeChange(() => { P = palette(GRID); });
 
   function resize(){
     const r = cv.parentElement.getBoundingClientRect();
@@ -361,7 +359,7 @@ export function mount(root){
       if (((m % 12) + 12) % 12 === 0){
         ctx.strokeStyle = P.cLine; ctx.beginPath();
         ctx.moveTo(GUTTER, y0); ctx.lineTo(W, y0); ctx.stroke();
-        ctx.fillStyle = P.label; ctx.font = MONO;
+        ctx.fillStyle = P.label; ctx.font = LABEL_FONT;
         ctx.fillText('C' + (Math.floor(m / 12) - 1), 6, y0 + 3);
       }
     }
@@ -378,7 +376,7 @@ export function mount(root){
     }
 
     // färdiga toner
-    ctx.font = MONO;
+    ctx.font = LABEL_FONT;
     notes.forEach(n => {
       const x1 = beatToX(n.start), x2 = beatToX(n.end);
       if (x2 < GUTTER || x1 > W) return;
