@@ -1,108 +1,172 @@
-/* Psalmspelaren: väljare, notrulle, text och reglage. Allt scopat till .psalm. */
+/* Psalmspelaren: väljare, notrulle, text och reglage. Allt scopat till .psalm.
+   Färger och mått kommer från css/tokens.css. */
 
-.psalm .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-                margin:0 0 10px}
-
-.psalm .picker{margin-bottom:20px}
-.psalm .picker label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-                     display:block;margin-bottom:7px}
+/* ---------- välj psalm ---------- */
+.psalm > .eyebrow{margin-bottom:var(--space-4)}
+.psalm .picker{margin-bottom:var(--space-4)}
+.psalm .picker label{
+  display:block;margin-bottom:var(--space-2);
+  font-family:var(--font-display);font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);
+  font-weight:500;letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);
+}
 .psalm .selwrap{position:relative}
-.psalm .selwrap select{width:100%;-webkit-appearance:none;appearance:none;background:none;
-                       border:1px solid var(--glass);border-radius:2px;color:var(--parchment);
-                       font-family:var(--serif);font-size:17px;padding:12px 40px 12px 14px;
-                       cursor:pointer;transition:border-color .15s}
-.psalm .selwrap select:hover{border-color:var(--candle)}
-.psalm .selwrap select:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
-.psalm .selwrap select option{background:#131A2E;color:#EFE8D8;font-size:15px}
-:root[data-theme="light"] .psalm .selwrap select option{background:#FFFFFF;color:#1A2138}
-.psalm .selwrap::after{content:"";position:absolute;right:16px;top:50%;width:8px;height:8px;
-                       border-right:1px solid var(--candle);border-bottom:1px solid var(--candle);
-                       transform:translateY(-70%) rotate(45deg);pointer-events:none}
-.psalm .loadrow{display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
-.psalm .fbtn{font-family:var(--sans);font-size:11px;letter-spacing:.08em;padding:8px 13px;
-             border:1px solid var(--glass);border-radius:2px;color:var(--dim);cursor:pointer;
-             transition:border-color .15s,color .15s}
-.psalm .fbtn:hover{border-color:var(--candle);color:var(--candle)}
-.psalm #loadmsg{font-size:11px;letter-spacing:.06em;color:var(--dim)}
+.psalm .selwrap select{
+  width:100%;-webkit-appearance:none;appearance:none;
+  background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--radius-sm);
+  color:var(--text);font-family:var(--font-text);font-size:var(--body-size);
+  min-height:52px;padding:0 var(--space-5) 0 var(--space-3);
+  cursor:pointer;transition:border-color .15s;
+}
+.psalm .selwrap select:hover{border-color:var(--accent-text)}
+.psalm .selwrap select option{background:var(--bg-panel);color:var(--text)}
+.psalm .selwrap::after{
+  content:"";position:absolute;right:var(--space-3);top:50%;width:8px;height:8px;
+  border-right:1.5px solid var(--wood);border-bottom:1.5px solid var(--wood);
+  transform:translateY(-70%) rotate(45deg);pointer-events:none;
+}
+
+.psalm .loadrow{
+  display:flex;gap:var(--space-3);align-items:center;
+  margin-top:var(--space-3);flex-wrap:wrap;
+}
+.psalm .fbtn{
+  display:inline-flex;align-items:center;min-height:44px;padding:0 var(--space-4);
+  border:1px solid var(--line);border-radius:var(--radius-pill);
+  font-family:var(--font-display);font-size:15px;font-weight:500;
+  color:var(--text-muted);cursor:pointer;transition:border-color .15s,color .15s;
+}
+.psalm .fbtn:hover{border-color:var(--accent-text);color:var(--accent-text)}
+.psalm #loadmsg{font-size:var(--small-size);color:var(--text-muted)}
 .psalm #loadmsg.err{color:var(--danger)}
 
-.psalm h1{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.05;margin:0}
-.psalm .credit{font-size:11px;letter-spacing:.1em;color:var(--dim);margin:8px 0 16px}
-.psalm .credit b{color:var(--parchment);font-weight:500}
+/* ---------- rubrik ---------- */
+.psalm h1{
+  margin:0;font-family:var(--font-display);font-weight:600;
+  font-size:var(--display-size);line-height:var(--display-line);
+  letter-spacing:var(--display-track);color:var(--text);
+}
+.psalm .credit{
+  margin:var(--space-2) 0 var(--space-4);
+  font-size:var(--small-size);line-height:var(--small-line);color:var(--text-muted);
+}
+.psalm .credit b{color:var(--text);font-weight:500}
 
-.psalm .stage{position:relative;border:1px solid var(--glass);border-radius:3px;overflow:hidden;
-              background:linear-gradient(180deg,#0B1020 0%,#182142 100%)}
-:root[data-theme="light"] .psalm .stage{background:linear-gradient(180deg,#FCFAF2 0%,#E4DECB 100%)}
+/* ---------- notrullen ---------- */
 .psalm canvas{display:block;width:100%;height:56vh;min-height:380px;max-height:540px}
 
-.psalm .lyric{margin:18px 0 4px;min-height:112px}
-.psalm .vlabel{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--candle);
-               margin-bottom:7px;min-height:13px}
-.psalm .line{font-family:var(--serif);font-size:23px;line-height:1.35}
-.psalm .line.next{font-size:17px;color:var(--dim);margin-top:8px}
-.psalm .syl{color:var(--dim);transition:color .12s linear}
-.psalm .syl.sung{color:var(--parchment)}
-.psalm .syl.now{color:var(--candle)}
+/* ---------- texten ---------- */
+.psalm .lyric{margin:var(--space-4) 0 var(--space-1);min-height:128px}
+.psalm .vlabel{
+  min-height:16px;margin-bottom:var(--space-2);
+  font-family:var(--font-display);font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);
+  font-weight:500;letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--wood);
+}
+.psalm .line{font-size:var(--lead-size);line-height:var(--lead-line)}
+.psalm .line.next{font-size:var(--body-size);line-height:var(--body-line);
+                  color:var(--text-muted);margin-top:var(--space-1)}
+.psalm .syl{color:var(--text-muted);transition:color .12s linear}
+.psalm .syl.sung{color:var(--text)}
+.psalm .syl.now{color:var(--accent-text)}
 
-.psalm .transport{display:flex;align-items:center;gap:14px;margin-top:20px;
-                  border-top:1px solid var(--glass);padding-top:18px}
-.psalm button{font-family:var(--sans);cursor:pointer;background:none;color:inherit;
-              border:1px solid var(--glass);border-radius:2px;
-              transition:border-color .15s,color .15s,background .15s}
-.psalm button:hover:not(:disabled){border-color:var(--candle);color:var(--candle)}
-.psalm button:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
-.psalm button:disabled{opacity:.35;cursor:default}
-.psalm #play{width:52px;height:52px;border-radius:50%;border-color:var(--candle);color:var(--candle);
-             font-size:17px;flex:0 0 auto;display:grid;place-items:center}
+/* ---------- transport ---------- */
+.psalm .transport{
+  display:flex;align-items:center;gap:var(--space-3);
+  margin-top:var(--space-4);padding-top:var(--space-4);border-top:1px solid var(--line);
+}
+.psalm button{
+  font-family:var(--font-display);font-size:15px;font-weight:500;cursor:pointer;
+  background:none;color:var(--text-muted);
+  border:1px solid var(--line);border-radius:var(--radius-pill);
+  transition:border-color .15s,color .15s,background .15s;
+}
+.psalm button:hover:not(:disabled){border-color:var(--accent-text);color:var(--accent-text)}
+.psalm button:disabled{opacity:.4;cursor:default}
+.psalm #play{
+  width:56px;height:56px;flex:0 0 auto;display:grid;place-items:center;
+  background:var(--accent-fill);border-color:transparent;color:var(--on-accent);
+}
+.psalm #play:hover:not(:disabled){background:var(--text);border-color:transparent;color:var(--bg)}
+.psalm #play .icon{width:22px;height:22px;fill:currentColor;stroke:none}
 .psalm .bar{flex:1}
-.psalm input[type=range]{width:100%;-webkit-appearance:none;background:none;height:22px}
-.psalm input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--glass)}
-.psalm input[type=range]::-moz-range-track{height:2px;background:var(--glass)}
-.psalm input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
-      border-radius:50%;background:var(--candle);margin-top:-5px}
-.psalm input[type=range]::-moz-range-thumb{width:12px;height:12px;border:0;border-radius:50%;
-      background:var(--candle)}
-.psalm .clock{font-size:11px;letter-spacing:.1em;color:var(--dim);font-variant-numeric:tabular-nums;
-              flex:0 0 auto}
+.psalm .clock{
+  flex:0 0 auto;font-family:var(--font-display);font-size:var(--small-size);
+  font-variant-numeric:tabular-nums;color:var(--text-muted);
+}
 
-.psalm .controls{display:grid;gap:12px;margin-top:16px;grid-template-columns:1fr;
-                 border-top:1px solid var(--glass);padding-top:16px}
+/* ---------- tonart och tempo ---------- */
+.psalm .controls{
+  display:grid;gap:var(--space-3);grid-template-columns:1fr;
+  margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--line);
+}
 @media(min-width:560px){.psalm .controls{grid-template-columns:auto auto;justify-content:space-between}}
-.psalm .row{display:flex;gap:8px;align-items:center}
-.psalm .row>span{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);
-                 margin-right:4px;flex:0 0 auto}
-.psalm .row button{font-size:12px;padding:7px 11px;color:var(--dim);min-width:36px}
-.psalm .row button.on{border-color:var(--candle);color:var(--candle)}
-.psalm #keyname{font-family:var(--serif);font-size:16px;color:var(--parchment);min-width:118px;
-                text-align:center}
-.psalm #keyname em{font-style:normal;font-family:var(--sans);font-size:10px;letter-spacing:.14em;
-                   color:var(--dim);display:block;margin-top:2px}
+.psalm .row{display:flex;gap:var(--space-2);align-items:center}
+.psalm .row>span{
+  flex:0 0 auto;margin-right:var(--space-1);
+  font-family:var(--font-display);font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);
+  font-weight:500;letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);
+}
+.psalm .row button{min-width:44px;min-height:44px;padding:0 var(--space-3)}
+.psalm .row button.on{border-color:var(--accent-text);color:var(--accent-text)}
+.psalm #keyname{
+  min-width:124px;text-align:center;
+  font-family:var(--font-display);font-size:18px;font-weight:500;color:var(--text);
+}
+.psalm #keyname em{
+  display:block;margin-top:2px;font-style:normal;
+  font-size:var(--eyebrow-size);letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);
+}
 
-.psalm .voice{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:16px;
-              border-top:1px solid var(--glass);padding-top:16px}
-.psalm .voice button{font-size:12px;padding:9px 14px;letter-spacing:.06em;color:var(--dim)}
-.psalm .voice button.on,.psalm .voice button.on:hover{border-color:#E38FA8;color:#E38FA8}
-.psalm .voice button#midi.on,.psalm .voice button#midi.on:hover{border-color:#8F86D8;color:#8F86D8}
-.psalm .tuner{font-family:var(--serif);font-size:15px;color:var(--dim);display:flex;gap:11px;
-              align-items:baseline}
-.psalm .tuner b{font-size:21px;color:var(--parchment);font-weight:400;min-width:56px;
-                display:inline-block}
-.psalm .tuner em{font-style:normal;font-family:var(--sans);font-size:10px;letter-spacing:.16em;
-                 text-transform:uppercase;color:var(--dim)}
-.psalm .tuner.good b,.psalm .tuner.good em{color:#7FC98A}
-.psalm .tuner.near b,.psalm .tuner.near em{color:var(--candle)}
+/* ---------- mikrofon, midi och stämmare ---------- */
+.psalm .voice{
+  display:flex;gap:var(--space-3);align-items:center;flex-wrap:wrap;
+  margin-top:var(--space-3);padding-top:var(--space-3);border-top:1px solid var(--line);
+}
+.psalm .voice button{min-height:44px;padding:0 var(--space-4)}
+.psalm .voice button.on,.psalm .voice button.on:hover{border-color:var(--text);color:var(--text)}
+.psalm .voice button#midi.on,.psalm .voice button#midi.on:hover{
+  border-color:var(--warn);color:var(--warn);
+}
+.psalm .tuner{display:flex;gap:var(--space-2);align-items:baseline;color:var(--text-muted)}
+.psalm .tuner b{
+  min-width:60px;display:inline-block;
+  font-family:var(--font-display);font-size:22px;font-weight:500;color:var(--text);
+}
+.psalm .tuner em{
+  font-style:normal;font-family:var(--font-display);
+  font-size:var(--eyebrow-size);letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);
+}
+.psalm .tuner.good b,.psalm .tuner.good em{color:var(--good)}
+.psalm .tuner.near b,.psalm .tuner.near em{color:var(--warn)}
 
-.psalm .legend{display:flex;gap:18px;margin-top:18px;font-size:10px;letter-spacing:.16em;
-               text-transform:uppercase;color:var(--dim);flex-wrap:wrap}
-.psalm .legend i{display:inline-block;width:16px;height:3px;margin-right:7px;vertical-align:middle;
-                 border-radius:1px}
+/* ---------- teckenförklaring ---------- */
+.psalm .legend{
+  display:flex;gap:var(--space-4);flex-wrap:wrap;margin-top:var(--space-4);
+  font-family:var(--font-display);font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);
+  font-weight:500;letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);
+}
+.psalm .legend i{
+  display:inline-block;width:18px;height:4px;margin-right:var(--space-2);
+  vertical-align:middle;border-radius:var(--radius-pill);
+}
 
-.psalm .verses{margin-top:34px;border-top:1px solid var(--glass);padding-top:20px;
-               display:grid;gap:22px;grid-template-columns:1fr}
+/* ---------- verserna ---------- */
+.psalm .verses{
+  display:grid;gap:var(--space-4);grid-template-columns:1fr;
+  margin-top:var(--space-5);padding-top:var(--space-4);border-top:1px solid var(--line);
+}
 @media(min-width:620px){.psalm .verses{grid-template-columns:1fr 1fr}}
-.psalm .verses h2{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-                  font-weight:500;margin:0 0 8px}
-.psalm .verses p{font-family:var(--serif);font-size:15px;line-height:1.6;color:#B9C0D4;margin:0}
-:root[data-theme="light"] .psalm .verses p{color:#4A4F63}
-.psalm .src{margin-top:26px;font-size:10px;letter-spacing:.12em;color:#5C6684}
+.psalm .verses h2{
+  margin:0 0 var(--space-2);font-family:var(--font-display);
+  font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);font-weight:500;
+  letter-spacing:var(--eyebrow-track);text-transform:uppercase;color:var(--text-muted);
+}
+.psalm .verses p{margin:0;color:var(--text-muted)}
+.psalm .src{margin-top:var(--space-4);font-size:var(--small-size);color:var(--text-muted)}
+
 @media(prefers-reduced-motion:reduce){.psalm .syl{transition:none}}

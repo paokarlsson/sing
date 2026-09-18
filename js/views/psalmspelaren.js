@@ -8,25 +8,25 @@ import { SONGS } from '../data/songs.js';
 import { createPitchDetector, BUF_SIZE } from '../lib/pitch.js';
 import { WHITE, noteName, roundRect } from '../lib/notes.js';
 import { midiToSong } from '../lib/midi-read.js';
-import { onThemeChange } from '../theme.js';
+import { onThemeChange, palette } from '../theme.js';
 
 const SMIDI = [36, 48, 60, 72, 84];        // samplade noter
 const LOOK = 2.6;                          // sekunder framförhållning i rullen
 const KEYS = ['C','Dess','D','Ess','E','F','Gess','G','Ass','A','B','H'];
 
-const PAL = {
-  dark:  { grid:'rgba(36,48,79,.85)',  mel:'#E9B15C', melEdge:'rgba(255,229,187,.85)',
-           acc:'rgba(79,140,146,.92)', accEdge:'rgba(150,203,206,.55)', syl:'#12182B',
-           white:'#EFE8D8', whiteOn:'#E9B15C', border:'#0E1426', black:'#1B2540',
-           blackOn:'#C88A33', label:'#8C93A8', hit:'rgba(239,232,216,.9)',
-           voice:'#E38FA8', voiceRing:'rgba(255,255,255,.75)',
-           midi:'#8F86D8', midiEdge:'rgba(200,196,246,.7)' },
-  light: { grid:'rgba(176,166,140,.85)', mel:'#E0A344', melEdge:'rgba(122,84,22,.5)',
-           acc:'rgba(74,138,144,.92)', accEdge:'rgba(38,86,90,.45)', syl:'#241B08',
-           white:'#FFFFFF', whiteOn:'#E9B15C', border:'#9A9277', black:'#2A3244',
-           blackOn:'#C88A33', label:'#7E7660', hit:'rgba(30,38,60,.85)',
-           voice:'#C4527A', voiceRing:'rgba(255,255,255,.85)',
-           midi:'#6A5FBF', midiEdge:'rgba(60,50,130,.5)' },
+/* Notrullens färger bor i css/tokens.css och byter värde med temat.
+   Här står bara vilket token som hör till vilken roll. */
+const ROLL = {
+  grid:      '--roll-grid',
+  mel:       '--roll-melody',   melEdge:  '--roll-melody-edge',
+  acc:       '--roll-harmony',  accEdge:  '--roll-harmony-edge',
+  syl:       '--roll-syllable',
+  white:     '--roll-key',      whiteOn:  '--roll-key-on',
+  black:     '--roll-key-black', blackOn: '--roll-key-black-on',
+  border:    '--roll-key-line', label:    '--roll-key-label',
+  hit:       '--roll-hit',
+  voice:     '--roll-voice',    voiceRing:'--roll-voice-ring',
+  midi:      '--roll-midi',     midiEdge: '--roll-midi-edge',
 };
 
 const detectPitch = createPitchDetector({ threshold: 0.12, rmsGate: 0.008, minHz: 60, maxHz: 1300 });
@@ -132,9 +132,15 @@ export function mount(root){
     paused = reset ? -LOOK : Math.min(frozen, D.end);
     if (reset) shown = -2;
   }
+  const ICON_PLAY = '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M8 5.2 19 12 8 18.8Z"/></svg>';
+  const ICON_PAUSE = '<svg class="icon pause" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<rect x="7" y="5" width="3.6" height="14" rx="1.4"/>' +
+    '<rect x="13.4" y="5" width="3.6" height="14" rx="1.4"/></svg>';
+
   function setBtn(on){
     const b = $('#play');
-    b.textContent = on ? '❙❙' : '▶';
+    b.innerHTML = on ? ICON_PAUSE : ICON_PLAY;
     b.setAttribute('aria-label', on ? 'Pausa' : 'Spela');
   }
   function toggle(){ if (playing){ frozen = pieceTime(); stop(false); } else start(); }
@@ -146,8 +152,8 @@ export function mount(root){
   }
 
   /* ---------- färgtema ---------- */
-  let P = PAL.dark;
-  const offTheme = onThemeChange(name => { P = PAL[name] || PAL.dark; });
+  let P = palette(ROLL);
+  const offTheme = onThemeChange(() => { P = palette(ROLL); });
 
   /* ---------- grafik ---------- */
   const cv = $('#c'), ctx = cv.getContext('2d');
@@ -202,7 +208,7 @@ export function mount(root){
       if (n.s >= 0){
         const s = D.syl[n.s].x.trim();
         if (s){
-          ctx.font = '600 12px "Palatino Linotype",Palatino,Georgia,serif'; ctx.textBaseline = 'middle';
+          ctx.font = '500 12px Newsreader,Georgia,serif'; ctx.textBaseline = 'middle';
           if (bx1 - bx0 > ctx.measureText(s).width + 9){
             ctx.fillStyle = P.syl; ctx.fillText(s, bx0 + 5, (y0 + y1) / 2 + 1);
           }
@@ -217,7 +223,7 @@ export function mount(root){
       ctx.strokeStyle = P.border; ctx.lineWidth = 1;
       ctx.strokeRect(.5, Math.round(y0) + .5, KEYW - 1, Math.round(y1 - y0 - 1));
       if (m % 12 === 0 && WH > 11){
-        ctx.font = '9px ui-sans-serif,system-ui,sans-serif'; ctx.fillStyle = P.label; ctx.textAlign = 'right';
+        ctx.font = '500 10px Jost,system-ui,sans-serif'; ctx.fillStyle = P.label; ctx.textAlign = 'right';
         ctx.fillText('C' + (Math.floor(m / 12) - 1), KEYW - 4, y1 - 4); ctx.textAlign = 'left';
       }
     }
@@ -551,6 +557,7 @@ export function mount(root){
 
   buildShelf();
   load(0);
+  setBtn(false);
   rafId = requestAnimationFrame(frame);
 
   /* ---------- riv ner ---------- */

@@ -1,0 +1,195 @@
+/* Teak & Terrakotta — stilpaketets tokens, plus det appen behöver utöver dem.
+   Filen har tre lager och de läses uppifrån och ner:
+
+     1. Paketet    värdena från stilpaket/tokens.json, oförändrade.
+     2. Tillägg    toner paketet saknar: ljusa varianter för mörkt tema,
+                   en mörkare mustard och en larmfärg.
+     3. Roller     de enda variabler resten av appens CSS rör. De byter
+                   värde med temat, så vy-CSS:en behöver aldrig veta
+                   om sidan är ljus eller mörk.
+
+   Reglerna för färgval står i stilpaket/README.md: clay till ytor och
+   rubriker från 24px, clay-deep till länkar och text under 24px,
+   mustard och olive som gäster, hairline aldrig till text. */
+
+/* --- 1. Paketet ------------------------------------------------------ */
+:root {
+  --surface:        #F4EDE1;  /* sidans botten, varmt brutet vitt      */
+  --surface-deep:   #E7D9C2;  /* sektioner, kort, inmatningsfält       */
+  --ink:            #241C14;  /* rubriker och brödtext                 */
+  --ink-muted:      #5B4A38;  /* bildtexter, metadata, hjälptext       */
+  --clay:           #C4562F;  /* huvudaccent, ytor + display ≥24px     */
+  --clay-deep:      #9C3B1B;  /* länkar, accenttext <24px, knappar     */
+  --mustard:        #D6A029;  /* markeringar, taggar, högdagerfält     */
+  --olive:          #4F5D36;  /* mörka fält, sidfot                    */
+  --teak:           #8C5A36;  /* träton: ikoner, dekor, sekundär text  */
+  --hairline:       #CDBB9C;  /* 1px linjer — aldrig text              */
+
+  --font-display: "Jost", "Futura", "Century Gothic", system-ui, sans-serif;
+  --font-text:    "Newsreader", "Iowan Old Style", Georgia, serif;
+
+  --display-xl-size: 64px;  --display-xl-line: 60px;  --display-xl-track: -0.02em;
+  --display-size:    44px;  --display-line:    46px;  --display-track:    -0.015em;
+  --title-size:      28px;  --title-line:      34px;  --title-track:      -0.01em;
+  --eyebrow-size:    13px;  --eyebrow-line:    16px;  --eyebrow-track:     0.16em;
+  --lead-size:       20px;  --lead-line:       32px;
+  --body-size:       17px;  --body-line:       28px;
+  --small-size:      14px;  --small-line:      22px;
+
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  16px;
+  --space-4:  24px;
+  --space-5:  40px;
+  --space-6:  64px;
+  --space-7: 104px;
+
+  --radius-sm:    6px;
+  --radius-lg:   20px;
+  --radius-pill: 999px;
+
+  --page-inline: var(--space-6);
+}
+@media (max-width: 720px) {
+  :root {
+    --page-inline: var(--space-4);
+    --display-xl-size: 40px; --display-xl-line: 38px;
+    --display-size:    32px; --display-line:    36px;
+    --lead-size:       17px; --lead-line:       28px;
+  }
+}
+
+/* --- 2. Tillägg ------------------------------------------------------ */
+/* Paketet har inget mörkt tema, men appen har en temaknapp sedan tidigare.
+   Tonerna nedan är ljusare syskon till paketets, framtagna för att klara
+   samma kontrastkrav mot en mörk botten: 4,5:1 för text och 3:1 för
+   grafik och text från 24px. --mustard-deep finns för att mustard är
+   för ljus för en linje mot surface (1,7:1); den mörka varianten når 3,5:1. */
+:root {
+  --ink-deep:      #1C1611;  /* mörka temats botten                    */
+  --ink-panel:     #262019;  /* mörka temats paneler och fält          */
+  --ink-line:      #453A2E;  /* mörka temats hårfina linjer            */
+  --surface-muted: #C6B49A;  /* dämpad text mot mörk botten            */
+  --clay-light:    #D9663B;  /* clay mot mörk botten, ytor och ≥24px   */
+  --clay-lift:     #E4713F;  /* fylld knapp i mörkt tema, ink ovanpå   */
+  --clay-text:     #E08A5F;  /* clay-deep:s roll i mörkt tema          */
+  --mustard-deep:  #A87516;  /* mustard som linje mot ljus botten      */
+  --olive-light:   #9DB072;  /* olive mot mörk botten                  */
+  --teak-light:    #B5825A;  /* teak mot mörk botten                   */
+  --alarm:         #A32235;  /* fel och avbrott, ljust tema            */
+  --alarm-light:   #E0645E;  /* samma mot mörk botten                  */
+
+  /* Paketet har ingen monospace. Den används bara till <code> i
+     felmeddelanden, aldrig till löpande text eller rubriker. */
+  --font-mono: ui-monospace, "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* --- 3. Roller ------------------------------------------------------- */
+/* Ljust tema är stilpaketet rakt av. */
+:root {
+  --bg:           var(--surface);
+  --bg-panel:     var(--surface-deep);
+  --bg-sunken:    var(--surface-deep);
+  --text:         var(--ink);
+  --text-muted:   var(--ink-muted);
+  --line:         var(--hairline);
+  --accent:       var(--clay);        /* ytor och display från 24px     */
+  --accent-text:  var(--clay-deep);   /* länkar och text under 24px     */
+  --accent-fill:  var(--clay-deep);   /* primärknappens botten          */
+  --on-accent:    var(--surface);     /* etikett på primärknapp         */
+  --highlight:    var(--mustard);
+  --on-highlight: var(--ink);
+  --deep:         var(--olive);       /* mörkt fält, t.ex. sidfoten     */
+  --on-deep:      var(--surface);
+  --wood:         var(--teak);
+  --danger:       var(--alarm);
+  --good:         var(--olive);
+  --warn:         var(--mustard-deep);
+
+  /* Notrullen i psalmspelaren */
+  --roll-grid:          rgba(205, 187, 156, .9);
+  --roll-melody:        var(--clay);
+  --roll-melody-edge:   rgba(36, 28, 20, .45);
+  --roll-harmony:       var(--olive);
+  --roll-harmony-edge:  rgba(36, 28, 20, .35);
+  --roll-syllable:      var(--surface);
+  --roll-key:           var(--surface);
+  --roll-key-on:        var(--clay);
+  --roll-key-black:     var(--ink);
+  --roll-key-black-on:  var(--clay-deep);
+  --roll-key-line:      var(--hairline);
+  --roll-key-label:     var(--ink-muted);
+  --roll-hit:           rgba(36, 28, 20, .8);
+  --roll-voice:         var(--ink);
+  --roll-voice-ring:    rgba(244, 237, 225, .85);
+  --roll-midi:          var(--mustard-deep);
+  --roll-midi-edge:     rgba(36, 28, 20, .4);
+
+  /* Taktnätet i mic → midi */
+  --grid-row:           rgba(244, 237, 225, .55);
+  --grid-row-black:     rgba(36, 28, 20, .07);
+  --grid-octave:        rgba(36, 28, 20, .12);
+  --grid-label:         var(--ink-muted);
+  --grid-bar:           rgba(36, 28, 20, .22);
+  --grid-beat:          rgba(36, 28, 20, .08);
+  --grid-note:          rgba(196, 86, 47, .85);
+  --grid-note-open:     rgba(196, 86, 47, .3);
+  --grid-note-text:     var(--surface);
+  --grid-trace:         var(--olive);
+  --grid-playhead:      rgba(36, 28, 20, .3);
+  --grid-playhead-rec:  var(--alarm);
+}
+
+/* Mörkt tema: samma roller, ljusare toner. Botten och text byter plats,
+   accenterna lyfts så att kontrasten håller. */
+:root[data-theme="dark"] {
+  --bg:           var(--ink-deep);
+  --bg-panel:     var(--ink-panel);
+  --bg-sunken:    #16110D;
+  --text:         var(--surface);
+  --text-muted:   var(--surface-muted);
+  --line:         var(--ink-line);
+  --accent:       var(--clay-light);
+  --accent-text:  var(--clay-text);
+  --accent-fill:  var(--clay-lift);
+  --on-accent:    var(--ink-deep);
+  --highlight:    var(--mustard);
+  --on-highlight: var(--ink-deep);
+  --deep:         #3C4629;
+  --on-deep:      var(--surface);
+  --wood:         var(--teak-light);
+  --danger:       var(--alarm-light);
+  --good:         var(--olive-light);
+  --warn:         var(--mustard);
+
+  --roll-grid:          rgba(69, 58, 46, .9);
+  --roll-melody:        var(--clay-lift);
+  --roll-melody-edge:   rgba(244, 237, 225, .5);
+  --roll-harmony:       var(--olive-light);
+  --roll-harmony-edge:  rgba(244, 237, 225, .35);
+  --roll-syllable:      var(--ink-deep);
+  --roll-key:           var(--surface);
+  --roll-key-on:        var(--clay-lift);
+  --roll-key-black:     #2E2620;
+  --roll-key-black-on:  var(--clay);
+  --roll-key-line:      var(--ink-deep);
+  --roll-key-label:     var(--surface-muted);
+  --roll-hit:           rgba(244, 237, 225, .85);
+  --roll-voice:         var(--surface);
+  --roll-voice-ring:    rgba(28, 22, 17, .8);
+  --roll-midi:          var(--mustard);
+  --roll-midi-edge:     rgba(28, 22, 17, .6);
+
+  --grid-row:           rgba(244, 237, 225, .04);
+  --grid-row-black:     rgba(0, 0, 0, .18);
+  --grid-octave:        rgba(244, 237, 225, .08);
+  --grid-label:         var(--surface-muted);
+  --grid-bar:           rgba(244, 237, 225, .18);
+  --grid-beat:          rgba(244, 237, 225, .06);
+  --grid-note:          rgba(228, 113, 63, .85);
+  --grid-note-open:     rgba(228, 113, 63, .35);
+  --grid-note-text:     var(--ink-deep);
+  --grid-trace:         var(--olive-light);
+  --grid-playhead:      rgba(244, 237, 225, .25);
+  --grid-playhead-rec:  var(--alarm-light);
+}

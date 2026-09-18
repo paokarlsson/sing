@@ -1,27 +1,47 @@
-/* Startvyn: rubrik och de två korten. */
+/* Startvyn: hero och de två korten. */
 
-.home .eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);
-               margin:0 0 10px}
-.home h1{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.05;margin:0}
-.home .lede{font-size:13px;line-height:1.55;color:var(--dim);margin:10px 0 0;max-width:46ch}
-.home .hero{margin-bottom:34px}
+.home .hero{max-width:640px;margin-bottom:var(--space-6)}
+.home .hero h1{
+  margin:0;font-family:var(--font-display);font-weight:600;
+  font-size:var(--display-size);line-height:var(--display-line);
+  letter-spacing:var(--display-track);color:var(--text);
+}
+.home .lede{
+  margin:var(--space-3) 0 0;max-width:60ch;
+  font-size:var(--lead-size);line-height:var(--lead-line);color:var(--text-muted);
+}
 
-.cards{display:grid;gap:14px}
+.cards{display:grid;gap:var(--space-4)}
 @media (min-width:620px){ .cards{grid-template-columns:1fr 1fr} }
 
-.card{display:flex;flex-direction:column;text-decoration:none;color:inherit;
-      border:1px solid var(--glass);border-radius:3px;padding:22px 20px 20px;
-      background:linear-gradient(180deg,#0B1020 0%,#182142 100%);
-      transition:border-color .15s,transform .15s}
-:root[data-theme="light"] .card{background:linear-gradient(180deg,#FCFAF2 0%,#E4DECB 100%)}
-.card:hover{border-color:var(--candle);transform:translateY(-2px)}
-.card:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+.card{
+  display:flex;flex-direction:column;gap:var(--space-3);
+  text-decoration:none;color:inherit;
+  border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:var(--space-4);background:var(--bg-panel);
+  transition:border-color .15s,transform .15s;
+}
+.card:hover{border-color:var(--accent-text);transform:translateY(-2px)}
 
-.card .glyph{font-size:26px;line-height:1;margin-bottom:16px}
-.card h2{font-family:var(--serif);font-weight:400;font-size:23px;line-height:1.15;margin:0}
-.card .kicker{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--vine);
-              margin:0 0 8px}
-.card p{font-size:13px;line-height:1.6;color:var(--dim);margin:12px 0 0}
-.card .go{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--candle);
-          margin-top:18px}
-.card .go::after{content:" →"}
+.card .glyph{color:var(--wood)}
+.card .glyph .icon{width:32px;height:32px}
+.card .kicker{
+  margin:0;font-family:var(--font-display);
+  font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);font-weight:500;
+  letter-spacing:var(--eyebrow-track);text-transform:uppercase;color:var(--text-muted);
+  min-height:calc(var(--eyebrow-line) * 2);   /* håller rubrikerna i linje */
+}
+.card h2{
+  margin:0;font-family:var(--font-display);font-weight:600;
+  font-size:var(--title-size);line-height:var(--title-line);
+  letter-spacing:var(--title-track);color:var(--text);
+}
+.card p{margin:0;color:var(--text-muted)}
+.card .go{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  margin-top:var(--space-2);
+  font-family:var(--font-display);font-size:15px;font-weight:500;
+  color:var(--accent-text);
+}
+.card:hover .go .icon{transform:translateX(3px)}
+.card .go .icon{width:20px;height:20px;transition:transform .15s}

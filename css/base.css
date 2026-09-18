@@ -1,61 +1,177 @@
-/* Grundstommen: färgtokens, typografi, topplist och sidlayout.
-   Delas av alla vyer i appen. */
+/* Grundstommen: typografi, topplist, sidlayout och de kontroller som
+   delas av vyerna. Färger, mått och radier kommer från css/tokens.css —
+   inga hårdkodade värden här.
 
-:root{
-  --night:#0E1426; --glass:#24304F; --candle:#E9B15C; --vine:#4F8E92;
-  --parchment:#EFE8D8; --dim:#808CAE; --danger:#D2717F;
-  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
-  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
-  --measure:720px;
-}
-:root[data-theme="light"]{
-  --night:#EDE9DC; --glass:#CFC7B0; --candle:#A9701F; --vine:#3A6E73;
-  --parchment:#1A2138; --dim:#6C7188; --danger:#A83248;
-}
+   Formspråket följer stilpaketet Teak & Terrakotta: geometrisk rubriktyp
+   (Jost), serif i brödtexten (Newsreader), pillerformade knappar, kanter
+   i stället för skuggor och en accent i taget. */
+
+:root{ --measure:720px }
 :root[data-route="/mic-till-midi"]{ --measure:900px }
 
 *{box-sizing:border-box}
-body{margin:0;background:var(--night);color:var(--parchment);font-family:var(--sans);
-     -webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}
 
-.shell{max-width:var(--measure);margin:0 auto;padding:0 16px}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-text);
+  font-size:var(--body-size);
+  line-height:var(--body-line);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+a{color:var(--accent-text)}
+a:hover{color:var(--text)}
+
+:focus-visible{outline:2px solid var(--accent-text);outline-offset:2px}
+
+.shell{max-width:var(--measure);margin:0 auto;padding-inline:var(--page-inline);width:100%}
+
+/* ---------- typografiska klasser ---------- */
+.eyebrow{
+  margin:0 0 var(--space-2);
+  font-family:var(--font-display);
+  font-size:var(--eyebrow-size);line-height:var(--eyebrow-line);
+  font-weight:500;letter-spacing:var(--eyebrow-track);
+  text-transform:uppercase;
+  color:var(--wood);
+}
+.display,.title{margin:0;font-family:var(--font-display);font-weight:600;color:var(--text)}
+.display{font-size:var(--display-size);line-height:var(--display-line);letter-spacing:var(--display-track)}
+.title{font-size:var(--title-size);line-height:var(--title-line);letter-spacing:var(--title-track)}
+.lead{margin:0;font-size:var(--lead-size);line-height:var(--lead-line);color:var(--text-muted)}
+.small{font-size:var(--small-size);line-height:var(--small-line)}
+.muted{color:var(--text-muted)}
 
 /* ---------- hoppa till innehåll ---------- */
-.skip{position:absolute;left:-9999px;top:0;z-index:10;background:var(--night);
-      color:var(--candle);border:1px solid var(--candle);padding:10px 14px;font-size:12px}
-.skip:focus{left:8px;top:8px}
+.skip{
+  position:absolute;left:-9999px;top:0;z-index:10;
+  background:var(--accent-fill);color:var(--on-accent);
+  font-family:var(--font-display);font-size:var(--small-size);font-weight:500;
+  padding:12px 20px;border-radius:var(--radius-pill);text-decoration:none;
+}
+.skip:focus{left:var(--space-2);top:var(--space-2)}
 
 /* ---------- topplist ---------- */
-.topbar{border-bottom:1px solid var(--glass)}
-.topbar .shell{display:flex;align-items:center;gap:8px;min-height:56px;padding-top:9px;padding-bottom:9px}
-.brand{font-family:var(--serif);font-size:19px;letter-spacing:.01em;text-decoration:none;
-       color:var(--parchment);flex:0 0 auto;margin-right:6px}
-.brand:hover{color:var(--candle)}
-.tabs{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tabs a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;
-        color:var(--dim);white-space:nowrap;padding:8px 10px;border:1px solid transparent;
-        border-radius:2px;transition:color .15s,border-color .15s}
-.tabs a:hover{color:var(--candle)}
-.tabs a[aria-current="page"]{color:var(--candle);border-color:var(--glass)}
+.topbar{border-bottom:1px solid var(--line)}
+.topbar .shell{
+  display:flex;align-items:center;gap:var(--space-2);
+  min-height:72px;padding-block:var(--space-2);
+}
+.brand{
+  font-family:var(--font-display);font-size:24px;font-weight:600;letter-spacing:-.01em;
+  text-decoration:none;color:var(--text);flex:0 0 auto;margin-right:var(--space-2);
+}
+.brand:hover{color:var(--accent-text)}
 
-#theme{width:38px;height:38px;border-radius:2px;flex:0 0 auto;background:none;cursor:pointer;
-       border:1px solid var(--glass);color:var(--candle);font-size:15px;line-height:1;
-       transition:border-color .15s}
-#theme:hover{border-color:var(--candle)}
-#theme:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+.tabs{display:flex;gap:var(--space-1);flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{
+  font-family:var(--font-display);font-size:15px;font-weight:500;
+  text-decoration:none;color:var(--text-muted);white-space:nowrap;
+  padding:11px 18px;border-radius:var(--radius-pill);
+  border:1px solid transparent;
+  transition:color .15s,background .15s,border-color .15s;
+}
+.tabs a:hover{background:var(--bg-panel);color:var(--text)}
+.tabs a[aria-current="page"]{border-color:var(--accent-text);color:var(--accent-text)}
+
+#theme{
+  width:44px;height:44px;flex:0 0 auto;display:grid;place-items:center;
+  background:none;cursor:pointer;border:1px solid var(--line);
+  border-radius:var(--radius-pill);color:var(--wood);
+  transition:border-color .15s,color .15s;
+}
+#theme:hover{border-color:var(--accent-text);color:var(--accent-text)}
+#theme svg{width:22px;height:22px}
+
+/* På smal skärm får flikarna en egen rad under namnet. */
+@media (max-width:640px){
+  .topbar .shell{flex-wrap:wrap;padding-bottom:var(--space-2)}
+  .brand{flex:1 1 auto;margin-right:0}
+  .tabs{order:3;flex-basis:100%;margin-top:var(--space-1)}
+  .tabs a{padding:10px 14px;font-size:14px}
+}
+
+/* ---------- ikoner ---------- */
+/* Paketet skriver inline-SVG med 1,5px linje i currentColor, aldrig emoji. */
+.icon{
+  width:24px;height:24px;display:block;flex:0 0 auto;
+  fill:none;stroke:currentColor;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* ---------- knappar och taggar ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  min-height:44px;padding:0 var(--space-4);
+  border:1px solid transparent;border-radius:var(--radius-pill);
+  font-family:var(--font-display);font-size:15px;font-weight:500;
+  text-decoration:none;cursor:pointer;background:none;color:var(--text);
+  transition:border-color .15s,color .15s,background .15s;
+}
+.btn:disabled{opacity:.4;cursor:default}
+.btn--primary{background:var(--accent-fill);color:var(--on-accent)}
+.btn--primary:hover:not(:disabled){background:var(--text);color:var(--bg)}
+.btn--ghost{border-color:var(--line);color:var(--text-muted)}
+.btn--ghost:hover:not(:disabled){border-color:var(--accent-text);color:var(--accent-text)}
+.btn--ghost.on{border-color:var(--accent-text);color:var(--accent-text)}
+
+.tag{
+  display:inline-block;padding:var(--space-1) var(--space-3);
+  border-radius:var(--radius-pill);
+  font-family:var(--font-display);font-size:var(--small-size);font-weight:500;
+  letter-spacing:.08em;background:var(--highlight);color:var(--on-highlight);
+}
+
+/* ---------- paneler och ytor ---------- */
+.panel{
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius-lg);
+  padding:var(--space-4);
+}
+.stage{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line);border-radius:var(--radius-lg);
+  background:var(--bg-sunken);
+}
+
+/* ---------- reglage ---------- */
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:none;height:24px}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--line)}
+input[type=range]::-moz-range-track{height:2px;background:var(--line)}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:16px;height:16px;border-radius:var(--radius-pill);
+  background:var(--accent-fill);margin-top:-7px;
+}
+input[type=range]::-moz-range-thumb{
+  width:16px;height:16px;border:0;border-radius:var(--radius-pill);background:var(--accent-fill);
+}
 
 /* ---------- vy-container ---------- */
-#view{flex:1 0 auto;padding-top:20px;padding-bottom:48px}
+#view{flex:1 0 auto;padding-top:var(--space-5);padding-bottom:var(--space-6)}
 #view[data-state="loading"]{min-height:50vh}
-.loading,.viewerror{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);
-                    padding:40px 0}
-.viewerror{color:var(--danger);text-transform:none;letter-spacing:.04em;font-size:13px}
+.loading,.viewerror{
+  font-family:var(--font-display);font-size:var(--eyebrow-size);
+  letter-spacing:var(--eyebrow-track);text-transform:uppercase;
+  color:var(--text-muted);padding:var(--space-5) 0;
+}
+.viewerror{
+  color:var(--danger);text-transform:none;letter-spacing:0;
+  font-family:var(--font-text);font-size:var(--body-size);line-height:var(--body-line);
+}
 
-.sitefoot{border-top:1px solid var(--glass);margin-top:auto}
-.sitefoot .shell{padding-top:16px;padding-bottom:28px;font-size:11px;letter-spacing:.06em;
-                 color:var(--dim)}
+/* ---------- sidfot ---------- */
+/* Paketets mörka fält: olive med surface som text. */
+.sitefoot{margin-top:auto;background:var(--deep);color:var(--on-deep)}
+.sitefoot .shell{
+  padding-block:var(--space-4);
+  font-size:var(--small-size);line-height:var(--small-line);
+}
 
-:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
 @media(prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
