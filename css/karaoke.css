@@ -63,7 +63,9 @@
   transition:background .15s,color .15s;
 }
 .karaoke .kplay:disabled{opacity:.4;cursor:default}
-.karaoke .kplay:hover:not(:disabled){background:var(--text);color:var(--bg)}
+@media (hover:hover){
+  .karaoke .kplay:hover:not(:disabled){background:var(--text);color:var(--bg)}
+}
 .karaoke .kplay .icon{width:26px;height:26px}
 .karaoke #kseek{flex:1;min-width:0}
 .karaoke .kclock{

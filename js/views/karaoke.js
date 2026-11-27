@@ -81,7 +81,9 @@ export function mount(root){
   // Efter sista raden fortsätter den i samma takt tills den rullat ut.
   function position(t){
     const first = lines[0].t, n = lines.length;
-    if (t < first) return (t - first) / LEAD;
+    // Före första raden: glid in från strax under fokus, så att
+    // de första raderna syns redan när låten börjar.
+    if (t < first) return -0.6 * (1 - Math.max(0, t) / first);
     let i = 0;
     while (i + 1 < n && lines[i + 1].t <= t) i++;
     const a = lines[i].t;
