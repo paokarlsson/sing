@@ -4,21 +4,22 @@
 
   <audio id="kaudio" preload="metadata"></audio>
 
-  <div class="kstage" aria-live="off">
-    <p class="kline kprev" id="kprev"></p>
-    <p class="kline kcur" id="kcur"></p>
-    <p class="kline knext" id="knext"></p>
-    <p class="kcount" id="kcount" hidden></p>
-  </div>
+  <div class="kplayer" id="kplayer">
+    <div class="kstage" id="kstage" aria-live="off">
+      <div class="kroll" id="kroll"></div>
+      <p class="kcount" id="kcount" hidden></p>
+    </div>
 
-  <div class="ktransport">
-    <button class="kplay" id="kplay" aria-label="Spela"></button>
-    <input type="range" id="kseek" min="0" max="1000" value="0" aria-label="Position i låten">
-    <div class="kclock"><span id="know">0:00</span> / <span id="ktot">0:00</span></div>
+    <div class="ktransport">
+      <button class="kplay" id="kplay" aria-label="Spela"></button>
+      <input type="range" id="kseek" min="0" max="1000" value="0" aria-label="Position i låten">
+      <div class="kclock"><span id="know">0:00</span> / <span id="ktot">0:00</span></div>
+      <button class="kfs" id="kfs" aria-label="Helskärm" aria-pressed="false"></button>
+    </div>
   </div>
 
   <div class="kopts">
-    <span>Sångvolym</span>
+    <span>Volym</span>
     <input type="range" id="kvol" min="0" max="100" value="100" aria-label="Volym">
   </div>
 
