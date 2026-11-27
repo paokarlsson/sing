@@ -1,0 +1,29 @@
+<div class="karaoke">
+  <p class="eyebrow">Karaoke</p>
+  <h1 class="display" id="ktitle"></h1>
+
+  <audio id="kaudio" preload="metadata"></audio>
+
+  <div class="kstage" aria-live="off">
+    <p class="kline kprev" id="kprev"></p>
+    <p class="kline kcur" id="kcur"></p>
+    <p class="kline knext" id="knext"></p>
+    <p class="kcount" id="kcount" hidden></p>
+  </div>
+
+  <div class="ktransport">
+    <button class="kplay" id="kplay" aria-label="Spela"></button>
+    <input type="range" id="kseek" min="0" max="1000" value="0" aria-label="Position i låten">
+    <div class="kclock"><span id="know">0:00</span> / <span id="ktot">0:00</span></div>
+  </div>
+
+  <div class="kopts">
+    <span>Sångvolym</span>
+    <input type="range" id="kvol" min="0" max="100" value="100" aria-label="Volym">
+  </div>
+
+  <h2 class="eyebrow klisthead">Hela texten · klicka på en rad för att hoppa dit</h2>
+  <ol class="klist" id="klist"></ol>
+
+  <p class="ksrc small muted">Texten är maskintranskriberad (Whisper) och kan innehålla felhörningar.</p>
+</div>
