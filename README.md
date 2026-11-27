@@ -1,11 +1,12 @@
 # Sjunga
 
-Två verktyg för rösten, samlade i en ensidesapp (SPA):
+Verktyg för rösten, samlade i en ensidesapp (SPA):
 
 * **Psalmspelaren** – spelar upp fria melodier ur den svenska psalmboken med
   text, transponering, tempo, mikrofonstämmare och MIDI-klaviatur.
 * **Mic → MIDI** – metronom och inspelning som kvantiserar det du sjunger till
   noter och exporterar en .mid-fil.
+* **Karaoke** – spelar Braskelibruskelibräng och fyller i texten ord för ord.
 
 ## Så är det byggt
 
@@ -20,6 +21,7 @@ css/base.css            typografi, topplist, knappar, sidlayout
 css/home.css            startvyn
 css/psalmspelaren.css   psalmspelaren (scopad till .psalm)
 css/mic-till-midi.css   mic → midi (scopad till .mic)
+css/karaoke.css         karaoke (scopad till .karaoke)
 views/*.html            markup för respektive vy
 js/app.js               hash-router och vylivscykel
 js/theme.js             mörkt/ljust tema + palette() som läser färgtokens
@@ -31,9 +33,11 @@ js/lib/midi-write.js    skriva .mid
 js/views/*.js           beteendet i varje vy
 js/data/songs.js        psalmdata
 js/data/samples.js      orgelsamplingar (laddas först när ljudet startar)
+js/data/braskelibruskelibrang.js  karaoketext med tider per ord (Whisper)
+audio/                  ljudfiler till karaoken
 ```
 
-Rutter: `#/` (start), `#/psalmspelaren`, `#/mic-till-midi`. De gamla
+Rutter: `#/` (start), `#/psalmspelaren`, `#/mic-till-midi`, `#/karaoke`. De gamla
 adresserna `psalmspelaren.html` och `mic-till-midi.html` pekar vidare till
 motsvarande vy.
 

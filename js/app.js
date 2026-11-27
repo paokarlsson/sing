@@ -26,6 +26,11 @@ const ROUTES = {
     markup: 'views/mic-till-midi.html',
     load: () => import('./views/mic-till-midi.js'),
   },
+  '/karaoke': {
+    title: 'Karaoke · Sjunga',
+    markup: 'views/karaoke.html',
+    load: () => import('./views/karaoke.js'),
+  },
 };
 const DEFAULT_ROUTE = '/';
 
