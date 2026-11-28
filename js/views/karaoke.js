@@ -1,16 +1,19 @@
-/* Karaoke: spelar låten och låter texten rulla kontinuerligt förbi,
-   med orden ifyllda i takt med sången. Tiderna kommer från
-   js/data/braskelibruskelibrang.js. */
+/* Karaoke: välj en låt, så spelas den och texten rullar förbi med
+   orden ifyllda i takt med sången. En boll studsar över ordet som
+   sjungs. Låtlistan finns i js/data/karaoke.js. */
 
-import { song } from '../data/braskelibruskelibrang.js';
+import { SONGS } from '../data/karaoke.js';
 
 const ICON = d => '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
 const PLAY = ICON('<path d="M8 5.5v13l10.5-6.5z"/>');
 const PAUSE = ICON('<path d="M8.5 5.5v13M15.5 5.5v13"/>');
 const FS_ON = ICON('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>');
 const FS_OFF = ICON('<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>');
+const NOTE = ICON('<path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/>');
 const LEAD = 4;        // sekunder före första raden då nedräkningen visas
 const FOCUS = 0.4;     // var på scenen (andel av höjden) den sjungna raden ligger
+const HOP = 16;        // bollens studshöjd i px
+const STORE = 'sing-karaoke-song';
 
 const fmt = s => {
   if (!isFinite(s)) s = 0;
@@ -22,72 +25,117 @@ export function mount(root){
   const $ = id => root.querySelector('#' + id);
   const audio = $('kaudio'), play = $('kplay'), seek = $('kseek');
   const player = $('kplayer'), stage = $('kstage'), roll = $('kroll');
-  const count = $('kcount'), list = $('klist'), fsBtn = $('kfs');
-  const lines = song.lines;
+  const ball = $('kball'), count = $('kcount'), list = $('klist');
+  const fsBtn = $('kfs'), picker = $('kpicker');
 
-  $('ktitle').textContent = song.title;
+  let alive = true, raf = 0, dragging = false;
+  let lines = [], rows = [], items = [], centers = [], active = -2;
+  let blobUrl = null, loadId = 0;
 
-  // Låten hämtas som blob: då går det att spola även när servern inte
-  // stöder Range-förfrågningar (t.ex. python3 -m http.server).
-  let blobUrl = null, alive = true;
-  play.disabled = true;
-  fetch(song.audio)
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.blob(); })
-    .then(b => { if (!alive) return; blobUrl = URL.createObjectURL(b); audio.src = blobUrl; })
-    .catch(() => { if (alive) audio.src = song.audio; })
-    .finally(() => { play.disabled = false; });
-
-  const jump = l => { audio.currentTime = Math.max(0, l.t - 0.3); audio.play(); };
-
-  // Rullen på scenen: alla rader, varje ord ett eget span.
-  const rows = lines.map(l => {
-    const p = document.createElement('p');
-    p.className = 'krow';
-    l.w.forEach((w, k) => {
-      const s = document.createElement('span');
-      s.className = 'kw';
-      s.textContent = w[2];
-      p.append(s);
-      if (k < l.w.length - 1) p.append(' ');
-    });
-    p.addEventListener('click', () => jump(l));
-    roll.append(p);
-    return { el: p, words: [...p.children] };
-  });
-
-  // Hela texten som klickbar lista under spelaren.
-  const items = lines.map(l => {
-    const li = document.createElement('li');
+  // ---------- låtväljare ----------
+  const cards = SONGS.map(s => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.innerHTML = '<span class="kt">' + fmt(l.t) + '</span>';
-    b.append(l.w.map(w => w[2]).join(' '));
-    b.addEventListener('click', () => jump(l));
-    li.append(b);
-    list.append(li);
-    return li;
+    b.className = 'kcard';
+    b.innerHTML = '<span class="kcard-icon">' + NOTE + '</span>' +
+      '<span class="kcard-title"></span><span class="kcard-len">' + s.length + '</span>';
+    b.querySelector('.kcard-title').textContent = s.title;
+    b.addEventListener('click', () => choose(s, true));
+    picker.append(b);
+    return b;
   });
+
+  async function choose(entry, autoplay){
+    const id = ++loadId;
+    cards.forEach((c, k) => c.setAttribute('aria-pressed', String(SONGS[k] === entry)));
+    try { localStorage.setItem(STORE, entry.id); } catch (e) {}
+
+    audio.pause();
+    play.disabled = true;
+    const { song } = await entry.load();
+    if (!alive || id !== loadId) return;
+    build(song);
+
+    // Låten hämtas som blob: då går det att spola även när servern inte
+    // stöder Range-förfrågningar (t.ex. python3 -m http.server).
+    if (blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl = null; }
+    let src = song.audio;
+    try {
+      const r = await fetch(song.audio);
+      if (!r.ok) throw new Error(r.status);
+      const blob = await r.blob();
+      if (!alive || id !== loadId) return;
+      blobUrl = src = URL.createObjectURL(blob);
+    } catch (e) {}
+    if (!alive || id !== loadId) return;
+    audio.src = src;
+    play.disabled = false;
+    if (autoplay) audio.play().catch(() => {});
+  }
+
+  // ---------- bygg rullen och listan för en låt ----------
+  function build(song){
+    $('ktitle').textContent = song.title;
+    lines = song.lines;
+    active = -2;
+    roll.querySelectorAll('.krow').forEach(r => r.remove());
+    list.replaceChildren();
+
+    const jump = l => { audio.currentTime = Math.max(0, l.t - 0.3); audio.play(); };
+
+    rows = lines.map(l => {
+      const p = document.createElement('p');
+      p.className = 'krow';
+      l.w.forEach((w, k) => {
+        const s = document.createElement('span');
+        s.className = 'kw';
+        s.textContent = w[2];
+        p.append(s);
+        if (k < l.w.length - 1) p.append(' ');
+      });
+      p.addEventListener('click', () => jump(l));
+      roll.append(p);
+      return { el: p, words: [...p.children] };
+    });
+
+    items = lines.map(l => {
+      const li = document.createElement('li');
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.innerHTML = '<span class="kt">' + fmt(l.t) + '</span>';
+      b.append(l.w.map(w => w[2]).join(' '));
+      b.addEventListener('click', () => jump(l));
+      li.append(b);
+      list.append(li);
+      return li;
+    });
+
+    seek.value = 0;
+    $('know').textContent = '0:00';
+    $('ktot').textContent = '0:00';
+    measure();
+  }
 
   // Radernas mittpunkter i rullen. Mäts om när storleken ändras
   // (typsnitt som laddas, fönsterbredd, helskärm).
-  let centers = [];
-  const measure = () => { centers = rows.map(r => r.el.offsetTop + r.el.offsetHeight / 2); tick(); };
+  function measure(){
+    centers = rows.map(r => r.el.offsetTop + r.el.offsetHeight / 2);
+    tick();
+  }
   const ro = new ResizeObserver(measure);
   ro.observe(roll);
   ro.observe(stage);
 
   // Rullens läge som ett flyttal: i + andel av vägen till nästa rad.
   // Linjärt från en rads start till nästa, så texten glider hela tiden.
-  // Efter sista raden fortsätter den i samma takt tills den rullat ut.
   function position(t){
-    const first = lines[0].t, n = lines.length;
-    // Före första raden: glid in från strax under fokus, så att
-    // de första raderna syns redan när låten börjar.
+    const n = lines.length, first = lines[0].t;
+    // Före första raden: glid in från strax under fokus.
     if (t < first) return -0.6 * (1 - Math.max(0, t) / first);
     let i = 0;
     while (i + 1 < n && lines[i + 1].t <= t) i++;
     const a = lines[i].t;
-    const b = i + 1 < n ? lines[i + 1].t : a + (lines[n - 1].t - first) / (n - 1);
+    const b = i + 1 < n ? lines[i + 1].t : a + (lines[n - 1].t - first) / Math.max(1, n - 1);
     return i + (t - a) / (b - a);
   }
 
@@ -96,8 +144,6 @@ export function mount(root){
     for (let k = 0; k < lines.length; k++){ if (lines[k].t <= t + 0.1) i = k; else break; }
     return i;
   }
-
-  let active = -2, raf = 0, dragging = false;
 
   function setActive(i){
     rows.forEach((r, k) => {
@@ -112,8 +158,30 @@ export function mount(root){
     active = i;
   }
 
+  // Bollen: ligger över ordet som sjungs, studsar en gång per ord och
+  // glider över till nästa ord under början av det.
+  function placeBall(t, i){
+    const line = lines[i];
+    if (!line || t > line.e + 0.4){ ball.hidden = true; return; }
+    let k = 0;
+    while (k + 1 < line.w.length && line.w[k + 1][0] <= t) k++;
+    const w = line.w[k], el = rows[i].words[k];
+    const len = Math.max(0.12, w[1] - w[0]);
+    const p = Math.min(1, Math.max(0, (t - w[0]) / len));
+    const cx = el.offsetLeft + el.offsetWidth / 2;
+    let x = cx;
+    if (k > 0 && p < 0.35){
+      const pe = rows[i].words[k - 1];
+      const px = pe.offsetLeft + pe.offsetWidth / 2;
+      x = px + (cx - px) * (p / 0.35);
+    }
+    const y = el.offsetTop - Math.sin(Math.PI * p) * HOP;
+    ball.hidden = false;
+    ball.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px)';
+  }
+
   function tick(){
-    if (!alive) return;
+    if (!alive || !lines.length) return;
     const t = audio.currentTime;
     const i = lineAt(t);
     if (i !== active) setActive(i);
@@ -124,9 +192,9 @@ export function mount(root){
         rows[i].words[k].style.setProperty('--p', (p * 100).toFixed(1) + '%');
       });
     }
+    placeBall(t, i);
 
-    if (centers.length){
-      // Före första och efter sista raden används radavståndet vid kanten.
+    if (centers.length > 1){
       const f = position(t), n = centers.length;
       const k = Math.min(n - 2, Math.max(0, Math.floor(f)));
       const y = centers[k] + (f - k) * (centers[k + 1] - centers[k]);
@@ -201,7 +269,7 @@ export function mount(root){
     if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
     if (e.code === 'Space' && e.target.tagName !== 'BUTTON'){
       e.preventDefault();
-      audio.paused ? audio.play() : audio.pause();
+      if (!play.disabled) audio.paused ? audio.play() : audio.pause();
     } else if (e.key === 'f' || e.key === 'F'){
       toggleFs();
     } else if (e.key === 'Escape' && player.classList.contains('kfull')){
@@ -212,7 +280,10 @@ export function mount(root){
 
   setPlayIcon();
   setFsIcon();
-  measure();
+
+  let saved = null;
+  try { saved = localStorage.getItem(STORE); } catch (e) {}
+  choose(SONGS.find(s => s.id === saved) || SONGS[0], false);
 
   return () => {
     alive = false;

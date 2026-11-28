@@ -1,18 +1,64 @@
-/* Karaoke: rullande text, transport, helskärm och hela texten.
-   Allt scopat till .karaoke. Färger från css/tokens.css. */
+/* Karaoke: låtväljare, rullande text med studsboll, transport,
+   helskärm och hela texten. Allt scopat till .karaoke.
 
-.karaoke h1{margin-bottom:var(--space-4)}
+   Vyn är gjord för barn också: stora träffytor (minst 56px), stor
+   rund text, en stor spelknapp och en boll som visar vilket ord som
+   sjungs. Färger och mått kommer från css/tokens.css. */
+
+.karaoke > h1{margin-bottom:var(--space-4)}
+
+/* ---------- låtväljare ---------- */
+.karaoke .kpicker{
+  display:grid;gap:var(--space-3);
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  margin-bottom:var(--space-5);
+}
+.karaoke .kcard{
+  display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto;
+  column-gap:var(--space-3);align-items:center;text-align:left;
+  min-height:88px;padding:var(--space-3) var(--space-4);
+  background:var(--bg-panel);color:var(--text);
+  border:2px solid var(--line);border-radius:var(--radius-lg);
+  cursor:pointer;font:inherit;
+  transition:border-color .15s,background .15s,transform .15s;
+}
+.karaoke .kcard:active{transform:scale(.97)}
+.karaoke .kcard-icon{
+  grid-row:1 / 3;display:grid;place-items:center;
+  width:52px;height:52px;border-radius:var(--radius-pill);
+  background:var(--bg);color:var(--wood);
+  transition:background .15s,color .15s;
+}
+.karaoke .kcard-title{
+  font-family:var(--font-display);font-weight:600;
+  font-size:22px;line-height:1.2;
+  overflow-wrap:anywhere;
+}
+.karaoke .kcard-len{
+  font-family:var(--font-display);font-size:var(--small-size);
+  color:var(--text-muted);font-variant-numeric:tabular-nums;
+}
+.karaoke .kcard[aria-pressed="true"]{border-color:var(--accent)}
+.karaoke .kcard[aria-pressed="true"] .kcard-icon{background:var(--accent-fill);color:var(--on-accent)}
+@media (hover:hover){
+  .karaoke .kcard:hover{border-color:var(--accent-text)}
+}
 
 /* ---------- scenen ---------- */
+.karaoke .ksongtitle{
+  margin:0 0 var(--space-3);
+  font-family:var(--font-display);font-weight:600;
+  font-size:var(--title-size);line-height:var(--title-line);letter-spacing:var(--title-track);
+}
 /* Rullen flyttas med transform av js/views/karaoke.js; masken tonar
    ut raderna mot över- och underkanten. */
 .karaoke .kstage{
   position:relative;overflow:hidden;
-  height:clamp(300px,52vh,520px);
+  height:clamp(320px,55vh,540px);
   background:var(--bg-sunken);
-  border:1px solid var(--line);border-radius:var(--radius-lg);
-  -webkit-mask-image:linear-gradient(transparent,#000 18%,#000 72%,transparent);
-          mask-image:linear-gradient(transparent,#000 18%,#000 72%,transparent);
+  border-radius:var(--radius-lg);
+  -webkit-mask-image:linear-gradient(transparent,#000 16%,#000 74%,transparent);
+          mask-image:linear-gradient(transparent,#000 16%,#000 74%,transparent);
 }
 .karaoke .kroll{
   position:absolute;left:0;right:0;top:0;
@@ -21,17 +67,17 @@
   will-change:transform;
 }
 .karaoke .krow{
-  margin:0;padding:.35em 0;
+  margin:0;padding:.45em 0;
   font-family:var(--font-display);font-weight:600;
-  font-size:26px;line-height:1.25;letter-spacing:var(--title-track);
+  font-size:30px;line-height:1.3;letter-spacing:0;
   color:var(--text-muted);
-  opacity:.55;cursor:pointer;
-  transform:scale(.9);
+  opacity:.5;cursor:pointer;
+  transform:scale(.88);
   transition:opacity .35s,transform .35s;
 }
 .karaoke .krow.cur{opacity:1;transform:none}
-.karaoke .krow.past{opacity:.35}
-@media (min-width:721px){ .karaoke .krow{font-size:34px} }
+.karaoke .krow.past{opacity:.3}
+@media (min-width:721px){ .karaoke .krow{font-size:40px} }
 
 /* Varje ord fylls från vänster med accentfärgen när det sjungs.
    --p sätts av js/views/karaoke.js. */
@@ -42,12 +88,24 @@
   -webkit-text-fill-color:transparent;color:transparent;
 }
 
+/* Studsbollen. Placeras med transform så att dess mittpunkt hamnar
+   strax ovanför ordets överkant. */
+.karaoke .kball{
+  position:absolute;left:0;top:0;z-index:1;
+  width:18px;height:18px;margin:-20px 0 0 -9px;
+  border-radius:var(--radius-pill);
+  background:var(--highlight);
+  box-shadow:0 0 0 2px var(--bg-sunken);
+  pointer-events:none;
+}
+.karaoke .kball[hidden]{display:none}
+
 .karaoke .kcount{
   position:absolute;top:var(--space-5);right:var(--space-4);margin:0;
-  display:grid;place-items:center;width:44px;height:44px;
+  display:grid;place-items:center;width:64px;height:64px;
   border-radius:var(--radius-pill);
   background:var(--highlight);color:var(--on-highlight);
-  font-family:var(--font-display);font-weight:600;font-size:20px;
+  font-family:var(--font-display);font-weight:600;font-size:32px;
 }
 .karaoke .kcount[hidden]{display:none}
 
@@ -57,29 +115,35 @@
   margin-top:var(--space-4);
 }
 .karaoke .kplay{
-  width:56px;height:56px;flex:0 0 auto;display:grid;place-items:center;
+  width:72px;height:72px;flex:0 0 auto;display:grid;place-items:center;
   border:0;border-radius:var(--radius-pill);cursor:pointer;
   background:var(--accent-fill);color:var(--on-accent);
-  transition:background .15s,color .15s;
+  transition:background .15s,color .15s,transform .15s;
 }
+.karaoke .kplay:active:not(:disabled){transform:scale(.94)}
 .karaoke .kplay:disabled{opacity:.4;cursor:default}
 @media (hover:hover){
   .karaoke .kplay:hover:not(:disabled){background:var(--text);color:var(--bg)}
 }
-.karaoke .kplay .icon{width:26px;height:26px}
-.karaoke #kseek{flex:1;min-width:0}
+.karaoke .kplay .icon{width:34px;height:34px;stroke-width:2}
+.karaoke .kbar{flex:1;min-width:0;display:flex;flex-direction:column;gap:var(--space-1)}
+.karaoke #kseek{width:100%;height:32px}
+.karaoke #kseek::-webkit-slider-thumb{width:24px;height:24px;margin-top:-11px}
+.karaoke #kseek::-moz-range-thumb{width:24px;height:24px}
 .karaoke .kclock{
-  flex:0 0 auto;font-family:var(--font-display);font-size:var(--small-size);
+  font-family:var(--font-display);font-size:var(--small-size);
   color:var(--text-muted);font-variant-numeric:tabular-nums;
 }
 .karaoke .kfs{
-  width:44px;height:44px;flex:0 0 auto;display:grid;place-items:center;
-  background:none;cursor:pointer;border:1px solid var(--line);
+  width:56px;height:56px;flex:0 0 auto;display:grid;place-items:center;
+  background:none;cursor:pointer;border:2px solid var(--line);
   border-radius:var(--radius-pill);color:var(--wood);
   transition:border-color .15s,color .15s;
 }
-.karaoke .kfs:hover{border-color:var(--accent-text);color:var(--accent-text)}
-.karaoke .kfs .icon{width:22px;height:22px}
+@media (hover:hover){
+  .karaoke .kfs:hover{border-color:var(--accent-text);color:var(--accent-text)}
+}
+.karaoke .kfs .icon{width:26px;height:26px}
 
 .karaoke .kopts{
   display:flex;align-items:center;gap:var(--space-3);
@@ -92,44 +156,48 @@
 /* :fullscreen är det äkta läget; .kfull är reservläget för webbläsare
    som inte kan visa ett element i helskärm (iPhone). */
 .karaoke .kplayer:fullscreen{
-  background:var(--bg);
-  display:flex;flex-direction:column;
+  background:var(--bg);display:flex;flex-direction:column;
   padding:var(--space-4) var(--page-inline);
 }
 .karaoke .kplayer:-webkit-full-screen{
-  background:var(--bg);
-  display:flex;flex-direction:column;
+  background:var(--bg);display:flex;flex-direction:column;
   padding:var(--space-4) var(--page-inline);
 }
 .karaoke .kplayer.kfull{
   position:fixed;inset:0;z-index:100;
-  background:var(--bg);
-  display:flex;flex-direction:column;
+  background:var(--bg);display:flex;flex-direction:column;
   padding:max(var(--space-4),env(safe-area-inset-top)) var(--page-inline)
           max(var(--space-4),env(safe-area-inset-bottom));
 }
 .kfull-open{overflow:hidden}
 
 .karaoke .kplayer:fullscreen .kstage,
-.karaoke .kplayer.kfull .kstage{flex:1;height:auto;border:0;background:none}
-.karaoke .kplayer:-webkit-full-screen .kstage{flex:1;height:auto;border:0;background:none}
+.karaoke .kplayer.kfull .kstage{flex:1;height:auto;background:none}
+.karaoke .kplayer:-webkit-full-screen .kstage{flex:1;height:auto;background:none}
 
 .karaoke .kplayer:fullscreen .krow,
-.karaoke .kplayer.kfull .krow{font-size:clamp(30px,5.2vw,72px)}
-.karaoke .kplayer:-webkit-full-screen .krow{font-size:clamp(30px,5.2vw,72px)}
+.karaoke .kplayer.kfull .krow{font-size:clamp(34px,5.6vw,80px)}
+.karaoke .kplayer:-webkit-full-screen .krow{font-size:clamp(34px,5.6vw,80px)}
+
+.karaoke .kplayer:fullscreen .kball,
+.karaoke .kplayer.kfull .kball{width:26px;height:26px;margin:-28px 0 0 -13px;box-shadow:0 0 0 3px var(--bg)}
+.karaoke .kplayer:-webkit-full-screen .kball{width:26px;height:26px;margin:-28px 0 0 -13px;box-shadow:0 0 0 3px var(--bg)}
 
 /* ---------- hela texten ---------- */
 .karaoke .klisthead{margin-top:var(--space-6);margin-bottom:var(--space-3)}
 .karaoke .klist{list-style:none;margin:0;padding:0}
 .karaoke .klist button{
   display:flex;gap:var(--space-3);align-items:baseline;width:100%;
+  min-height:44px;
   background:none;border:0;border-radius:var(--radius-sm);
-  padding:var(--space-1) var(--space-2);text-align:left;cursor:pointer;
+  padding:var(--space-2);text-align:left;cursor:pointer;
   font-family:var(--font-text);font-size:var(--body-size);line-height:var(--body-line);
   color:var(--text-muted);
   transition:background .15s,color .15s;
 }
-.karaoke .klist button:hover{background:var(--bg-panel);color:var(--text)}
+@media (hover:hover){
+  .karaoke .klist button:hover{background:var(--bg-panel);color:var(--text)}
+}
 .karaoke .klist .on button{color:var(--accent-text);background:var(--bg-panel)}
 .karaoke .kt{
   flex:0 0 3.2em;font-family:var(--font-display);font-size:var(--small-size);
@@ -137,4 +205,12 @@
 }
 .karaoke .ksrc{margin-top:var(--space-4)}
 
-@media(prefers-reduced-motion:reduce){ .karaoke .krow{transform:none} }
+@media (max-width:480px){
+  .karaoke .kplay{width:64px;height:64px}
+  .karaoke .kfs{width:48px;height:48px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .karaoke .krow{transform:none}
+  .karaoke .kball{display:none}
+}
