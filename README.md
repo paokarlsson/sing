@@ -6,7 +6,8 @@ Verktyg för rösten, samlade i en ensidesapp (SPA):
   text, transponering, tempo, mikrofonstämmare och MIDI-klaviatur.
 * **Mic → MIDI** – metronom och inspelning som kvantiserar det du sjunger till
   noter och exporterar en .mid-fil.
-* **Karaoke** – spelar Braskelibruskelibräng och fyller i texten ord för ord.
+* **Karaoke** – välj en sång (Blå Hulken, Braskelibruskelibräng); texten
+  rullar förbi och en studsboll visar ordet som sjungs. Har helskärmsläge.
 
 ## Så är det byggt
 
@@ -33,7 +34,8 @@ js/lib/midi-write.js    skriva .mid
 js/views/*.js           beteendet i varje vy
 js/data/songs.js        psalmdata
 js/data/samples.js      orgelsamplingar (laddas först när ljudet startar)
-js/data/braskelibruskelibrang.js  karaoketext med tider per ord (Whisper)
+js/data/karaoke.js      låtlistan i karaoken
+js/data/<låt>.js        karaoketext med tider per ord (Whisper)
 audio/                  ljudfiler till karaoken
 ```
 
